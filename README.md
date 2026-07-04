@@ -1,63 +1,256 @@
 # Office Energy Monitor
 
-Office Energy Monitor is a hackathon project for monitoring office lights, fans, power usage, and alerts from one backend API. The current version uses simulated data only, so it can be demoed without real hardware.
+A hackathon project for monitoring office lights, fans, and electricity usage through a live web dashboard and a Discord bot.
+
+The system uses a Python simulation script to generate live office device data. The Django backend stores and processes the device state, the React dashboard displays the live status, and the Discord bot allows users to check the same data directly from Discord.
+
+---
 
 ## Project Overview
 
-The system models a small office with three rooms:
+In a small office, people often leave lights and fans running after office hours. This increases electricity usage and makes it difficult to track wasted power.
 
-- Drawing Room
-- Work Room 1
-- Work Room 2
+Office Energy Monitor solves this by providing:
 
-Each room has two fans and three lights. The backend stores every room, device, status change, power value, and alert. The React dashboard reads from the backend and updates live through polling.
+- Live device monitoring
+- Room-wise light and fan status
+- Total and room-wise power usage
+- Active alerts for abnormal situations
+- A React web dashboard
+- A Discord bot for quick status checks
+- Automatic Discord warning messages
+- A Wokwi hardware/electrical schematic for one representative room
 
-## Problem Statement
+---
 
-Small offices often leave lights and fans running after work hours because there is no central visibility into room-level device usage. This wastes electricity and makes it difficult for office admins or facilities teams to quickly understand which areas need attention.
+## Office Setup
 
-Office Energy Monitor solves this demo problem by giving a live operational dashboard, basic alerting, estimated usage calculations, and API endpoints that can later be used by a Discord bot or hardware devices.
+The office has 3 rooms:
 
-## Architecture
+| Room | Description |
+|---|---|
+| Drawing Room | Waiting area |
+| Work Room 1 | Employee work room |
+| Work Room 2 | Employee work room |
+
+Each room has:
+
+| Device Type | Quantity | Wattage |
+|---|---:|---:|
+| Fan | 2 | 60W each |
+| Light | 3 | 15W each |
+
+Total devices:
 
 ```text
-Simulated devices / future hardware
-          |
-          v
-Django + DRF backend API  <--- future Discord bot
-          |
-          v
-React + Vite dashboard
+3 rooms × 5 devices = 15 devices
 ```
 
-The backend is the single source of truth. The simulator, dashboard, manual toggles, and future Discord bot all read from or write to the same database through Django models and API endpoints.
+> Note: Some sections of the task document mention 18 devices, but the fixed office setup says each room has 2 fans and 3 lights. That gives 15 devices total, so this project follows the fixed room setup.
+
+---
+
+## Features
+
+### Backend Features
+
+- Django backend
+- Django REST Framework API
+- SQLite database
+- Room, Device, and Alert models
+- Python simulation script
+- Device seed command
+- Power usage calculation
+- Alert generation
+- Manual device toggle API
+- Backend tests
+
+### Dashboard Features
+
+- React + Vite dashboard
+- Live device status
+- Room-wise device panels
+- Total power usage
+- Room-wise power breakdown
+- Active alerts panel
+- Auto-refresh without manual page reload
+- Professional office monitoring UI
+
+### Discord Bot Features
+
+- Built with `discord.py`
+- Reads real data from the Django backend
+- Supports:
+  - `!status`
+  - `!room drawing`
+  - `!room work1`
+  - `!room work2`
+  - `!usage`
+  - `!alerts`
+  - `!help`
+- Sends automatic alert messages to a Discord channel
+- Prevents duplicate alert spam
+
+### Hardware / Electrical Schematic
+
+A Wokwi simulation is included to show how one office room could be wired and sensed in real life.
+
+Wokwi project link:
+
+```text
+https://wokwi.com/projects/468554658383958017
+```
+
+---
 
 ## Tech Stack
 
-- Backend: Django, Django REST Framework
-- Frontend: React, Vite
-- Bot: discord.py
-- API client: Axios
-- Database: SQLite for local demo
-- Styling: Plain CSS
-- Data source: Dummy seeded data and a random simulator
+| Layer | Technology |
+|---|---|
+| Backend | Django, Django REST Framework |
+| Database | SQLite |
+| Simulation | Python / Django management command |
+| Frontend | React, Vite |
+| Bot | discord.py |
+| Hardware Concept | Wokwi ESP32 |
+| Version Control | Git, GitHub |
 
-## Features Completed
+---
 
-- Django backend project and `monitor` app
-- Room, Device, and Alert models
-- Seed command for default office rooms and devices
-- Simulator command to randomly toggle devices
-- Manual device toggle API
-- REST API for dashboard and future bot usage
-- Live React dashboard with 2-second polling
-- Summary cards, room cards, power breakdown, alerts, and simple office layout
-- Estimated hourly usage, office-day usage, and daily cost
-- Bot-friendly API response for status summaries
-- Discord bot scaffold with live API-backed commands
-- Basic backend tests
+## System Architecture
 
-## Backend Setup
+The backend is the single source of truth. The React dashboard and Discord bot both read from the same Django REST API.
+
+```text
+Python Simulation Script
+        ↓
+Django REST API ↔ SQLite Database
+        ↓
+React Web Dashboard + Discord Bot
+        ↓
+User
+```
+
+### Architecture Diagram
+
+Add your software architecture diagram here:
+
+```md
+![Software Architecture Diagram](diagrams/architecture.png)
+```
+
+Image to add:
+
+```text
+diagrams/architecture.png
+```
+
+---
+
+## Hardware / Electrical Schematic
+
+The Wokwi schematic represents one office room.
+
+The representative room contains:
+
+- ESP32
+- 3 light indicators
+- 2 fan indicators
+- 5 switches
+- Fixed power values for calculation
+
+Wokwi link:
+
+```text
+https://wokwi.com/projects/468554658383958017
+```
+
+### Hardware Schematic Image
+
+Add your Wokwi circuit screenshot here:
+
+```md
+![Hardware Schematic](diagrams/hardware-schematic.png)
+```
+
+Image to add:
+
+```text
+diagrams/hardware-schematic.png
+```
+
+### Pin Mapping
+
+| Device | Switch Pin | Output Pin | Wattage |
+|---|---:|---:|---:|
+| Light 1 | GPIO 32 | GPIO 18 | 15W |
+| Light 2 | GPIO 33 | GPIO 19 | 15W |
+| Light 3 | GPIO 25 | GPIO 21 | 15W |
+| Fan 1 | GPIO 26 | GPIO 22 | 60W |
+| Fan 2 | GPIO 27 | GPIO 23 | 60W |
+
+### Hardware Explanation
+
+The Wokwi schematic is a representative circuit for one room. The same circuit concept can be repeated for Work Room 1 and Work Room 2.
+
+In the simulation, ESP32 reads switch states and controls output indicators. In a real deployment, actual lights and fans should be connected through proper relay modules, current sensors, isolation, and electrical protection. This project only uses Wokwi as a safe conceptual simulation.
+
+---
+
+## Repository Structure
+
+```text
+Office-Energy-Monitor/
+├── backend/
+│   ├── config/
+│   ├── monitor/
+│   ├── requirements.txt
+│   └── manage.py
+│
+├── frontend/
+│   ├── src/
+│   ├── package.json
+│   └── vite.config.js
+│
+├── bot/
+│   ├── bot.py
+│   ├── requirements.txt
+│   ├── .env.example
+│   └── README.md
+│
+├── diagrams/
+│   ├── architecture.png
+│   ├── hardware-schematic.png
+│   ├── dashboard-screenshot.png
+│   └── discord-bot-screenshot.png
+│
+├── docs/
+│   ├── demo-script.md
+│   └── pin-mapping.md
+│
+├── README.md
+└── .gitignore
+```
+
+---
+
+# Setup Instructions
+
+The project has three main software parts:
+
+1. Django backend
+2. React frontend
+3. Discord bot
+
+You should run them in separate terminals.
+
+---
+
+# Backend Setup
+
+## Ubuntu / Linux
+
+Open a terminal from the project root:
 
 ```bash
 cd backend
@@ -67,6 +260,12 @@ pip install -r requirements.txt
 python manage.py migrate
 python manage.py seed_devices
 python manage.py runserver
+```
+
+Backend will run at:
+
+```text
+http://127.0.0.1:8000
 ```
 
 Health check:
@@ -81,33 +280,83 @@ Expected response:
 {"status":"ok"}
 ```
 
-Run backend tests:
+---
 
-```bash
+## Windows PowerShell
+
+Open PowerShell from the project root:
+
+```powershell
 cd backend
-source .venv/bin/activate
-python manage.py test
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_devices
+python manage.py runserver
 ```
 
-## Frontend Setup
+If PowerShell blocks virtual environment activation, run:
 
-In a separate terminal:
-
-```bash
-cd frontend
-npm install
-npm run dev
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
-The frontend expects the backend API at:
+Then activate again:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+Backend will run at:
 
 ```text
-http://127.0.0.1:8000/api
+http://127.0.0.1:8000
 ```
 
-## Simulator Command
+Health check in browser:
 
-Run the simulator in a separate backend terminal:
+```text
+http://127.0.0.1:8000/api/health/
+```
+
+Expected response:
+
+```json
+{"status":"ok"}
+```
+
+---
+
+## Windows CMD Alternative
+
+```cmd
+cd backend
+py -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_devices
+python manage.py runserver
+```
+
+---
+
+# Python Simulation Script
+
+The simulator changes device states over time so the dashboard always has live data to show.
+
+It simulates:
+
+- Device ON/OFF status
+- Power draw
+- Last changed timestamp
+- Room-wise device state
+- Alert conditions
+
+## Ubuntu / Linux
+
+Open a new terminal:
 
 ```bash
 cd backend
@@ -115,138 +364,628 @@ source .venv/bin/activate
 python manage.py simulate_devices
 ```
 
-The simulator randomly selects one or two devices every five seconds and toggles them using the same `Device.set_status()` method used by manual controls.
+## Windows PowerShell
 
-## API Endpoints
+Open a new terminal:
 
-Core:
+```powershell
+cd backend
+.\.venv\Scripts\Activate.ps1
+python manage.py simulate_devices
+```
 
-- `GET /api/health/`
-- `GET /api/snapshot/`
-- `GET /api/devices/`
-- `POST /api/devices/<id>/toggle/`
-- `GET /api/rooms/<slug>/`
-- `GET /api/usage/`
-- `GET /api/alerts/`
+## Windows CMD
 
-Bot-friendly:
+```cmd
+cd backend
+.venv\Scripts\activate
+python manage.py simulate_devices
+```
 
-- `GET /api/status-summary/`
+The simulator will randomly toggle devices and update the database.
 
-## Dashboard Explanation
+---
 
-The dashboard polls `/api/snapshot/` every two seconds. It shows:
+# Frontend Setup
 
-- Total rooms
-- Total devices
-- Devices currently ON
-- Current power usage
-- Active alerts
-- Estimated hourly usage
-- Estimated office-day usage based on eight hours
-- Estimated daily cost in BDT
-- Room-level device state
-- Room-wise power bars
-- Active alert cards
-- Simple top-view office layout
+## Ubuntu / Linux
 
-Each device row includes a manual Toggle button for demo control.
-
-## Dummy Data Explanation
-
-The current system does not connect to real hardware. Dummy data is created by:
+Open a new terminal from the project root:
 
 ```bash
-python manage.py seed_devices
+cd frontend
+npm install
+npm run dev
 ```
 
-This creates:
-
-- 3 rooms
-- 15 devices total
-- 2 fans and 3 lights per room
-- Fan wattage: 60W
-- Light wattage: 15W
-
-The simulator and manual toggle controls update this same SQLite database.
-
-## Alert Logic
-
-Office hours are treated as 9 AM to 5 PM.
-
-Alerts are generated when `/api/snapshot/` is requested:
-
-- If current local time is outside office hours and a room has devices ON, a warning alert is created for that room.
-- If total power is above 400W, a danger alert is created.
-- For the MVP, unresolved alerts are cleared and recreated from the current state on each snapshot request.
-
-## Usage Estimate Logic
-
-Usage and cost values are demo estimates only:
-
-- Estimated hourly kWh = `total_power / 1000`
-- Estimated office-day kWh = `estimated_hourly_kwh * 8`
-- Estimated daily cost = `estimated_daily_kwh * 10`
-
-The assumed demo rate is 10 BDT/kWh.
-
-## Future Wokwi Hardware Plan
-
-The next hardware step is to simulate physical devices in Wokwi using an ESP32-style setup. The Wokwi simulation can later send device status or sensor data to the Django backend API.
-
-Planned hardware flow:
+Frontend will run at:
 
 ```text
-Wokwi simulated sensors/devices -> Django API -> React dashboard + Discord bot
+http://localhost:5173
 ```
 
-Possible future hardware inputs:
+---
 
-- Light switch state
-- Fan switch state
-- Room occupancy signal
-- Power sensor readings
+## Windows PowerShell
 
-## Future Discord Bot Plan
+```powershell
+cd frontend
+npm install
+npm run dev
+```
 
-The Discord bot lives in `bot/` and reads from the same backend API as the dashboard.
+Frontend will run at:
 
-Bot setup:
+```text
+http://localhost:5173
+```
+
+---
+
+# Discord Bot Setup
+
+## 1. Create Discord Bot
+
+Go to the Discord Developer Portal:
+
+```text
+https://discord.com/developers/applications
+```
+
+Steps:
+
+1. Create a new application
+2. Go to the Bot section
+3. Create a bot
+4. Copy the bot token
+5. Enable Message Content Intent
+6. Invite the bot to your server
+7. Give the bot permission to read and send messages
+
+---
+
+## 2. Configure Environment Variables
+
+Inside the `bot/` folder, create a file named:
+
+```text
+.env
+```
+
+Use this format:
+
+```env
+DISCORD_TOKEN=your_real_discord_bot_token_here
+API_BASE_URL=http://127.0.0.1:8000/api
+ALERT_CHANNEL_ID=your_discord_channel_id_here
+```
+
+Important:
+
+Do not commit `.env` to GitHub.
+
+Only commit:
+
+```text
+bot/.env.example
+```
+
+Example file:
+
+```env
+DISCORD_TOKEN=your_discord_bot_token_here
+API_BASE_URL=http://127.0.0.1:8000/api
+ALERT_CHANNEL_ID=your_channel_id_here
+```
+
+---
+
+## 3. Run Discord Bot
+
+## Ubuntu / Linux
+
+Open a new terminal:
 
 ```bash
 cd bot
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env
 python bot.py
 ```
 
-Set `DISCORD_TOKEN` and `API_BASE_URL` in `bot/.env`. Do not commit `.env`.
+## Windows PowerShell
 
-Planned commands:
+```powershell
+cd bot
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python bot.py
+```
+
+## Windows CMD
+
+```cmd
+cd bot
+py -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python bot.py
+```
+
+---
+
+## Discord Bot Commands
+
+| Command | Description |
+|---|---|
+| `!help` | Shows available commands |
+| `!status` | Shows current office status |
+| `!room drawing` | Shows Drawing Room status |
+| `!room work1` | Shows Work Room 1 status |
+| `!room work2` | Shows Work Room 2 status |
+| `!usage` | Shows power usage and estimated cost |
+| `!alerts` | Shows active alerts |
+
+Example command:
 
 ```text
 !status
-!room work1
-!usage
-!alerts
 ```
 
-Planned API mapping:
-
-- `!status` -> `GET /api/status-summary/`
-- `!room work1` -> `GET /api/rooms/work1/`
-- `!usage` -> `GET /api/usage/`
-- `!alerts` -> `GET /api/alerts/`
-
-## Project Structure
+Example output:
 
 ```text
-office-energy-monitor/
-  backend/
-  frontend/
-  docs/
-  diagrams/
-  README.md
+Office Status
+
+Drawing Room: 2 fans ON, 3 lights ON | 165W
+Work Room 1: 1 fan ON, 2 lights ON | 90W
+Work Room 2: 1 fan ON, 3 lights ON | 105W
+
+Total Power: 360W
+Devices ON: 12/15
+Active Alerts: 3
 ```
+
+---
+
+# Running the Full Project
+
+You need four terminals.
+
+---
+
+## Terminal 1: Django Backend
+
+Ubuntu / Linux:
+
+```bash
+cd backend
+source .venv/bin/activate
+python manage.py runserver
+```
+
+Windows PowerShell:
+
+```powershell
+cd backend
+.\.venv\Scripts\Activate.ps1
+python manage.py runserver
+```
+
+Windows CMD:
+
+```cmd
+cd backend
+.venv\Scripts\activate
+python manage.py runserver
+```
+
+---
+
+## Terminal 2: Python Simulator
+
+Ubuntu / Linux:
+
+```bash
+cd backend
+source .venv/bin/activate
+python manage.py simulate_devices
+```
+
+Windows PowerShell:
+
+```powershell
+cd backend
+.\.venv\Scripts\Activate.ps1
+python manage.py simulate_devices
+```
+
+Windows CMD:
+
+```cmd
+cd backend
+.venv\Scripts\activate
+python manage.py simulate_devices
+```
+
+---
+
+## Terminal 3: React Frontend
+
+Ubuntu / Linux and Windows:
+
+```bash
+cd frontend
+npm run dev
+```
+
+---
+
+## Terminal 4: Discord Bot
+
+Ubuntu / Linux:
+
+```bash
+cd bot
+source .venv/bin/activate
+python bot.py
+```
+
+Windows PowerShell:
+
+```powershell
+cd bot
+.\.venv\Scripts\Activate.ps1
+python bot.py
+```
+
+Windows CMD:
+
+```cmd
+cd bot
+.venv\Scripts\activate
+python bot.py
+```
+
+---
+
+# API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/health/` | Backend health check |
+| GET | `/api/snapshot/` | Full live dashboard data |
+| GET | `/api/devices/` | List all devices |
+| GET | `/api/usage/` | Total and room-wise power usage |
+| GET | `/api/alerts/` | Active alerts |
+| GET | `/api/rooms/<slug>/` | Room details |
+| POST | `/api/devices/<id>/toggle/` | Toggle device state manually |
+
+Example:
+
+```bash
+curl http://127.0.0.1:8000/api/snapshot/
+```
+
+---
+
+# Data Model
+
+## Room
+
+Stores room information.
+
+Rooms:
+
+```text
+Drawing Room
+Work Room 1
+Work Room 2
+```
+
+## Device
+
+Stores device state.
+
+Fields include:
+
+```text
+name
+room
+device_type
+status
+wattage
+current_power
+last_changed
+turned_on_at
+```
+
+## Alert
+
+Stores active alert information.
+
+Fields include:
+
+```text
+room
+message
+severity
+created_at
+resolved
+```
+
+---
+
+# Alert Logic
+
+The backend generates alerts for abnormal situations.
+
+Current alert rules:
+
+1. Devices left ON outside office hours
+2. High power usage
+3. Room/device status warnings
+
+Office hours:
+
+```text
+9 AM to 5 PM
+```
+
+Example alert:
+
+```text
+Work Room 2 has 2 fan(s) and 3 light(s) ON after office hours.
+```
+
+The Discord bot can automatically post active alerts to a selected Discord channel.
+
+---
+
+# Power Calculation
+
+Device wattage:
+
+```text
+Fan = 60W
+Light = 15W
+```
+
+Room maximum power:
+
+```text
+2 fans × 60W = 120W
+3 lights × 15W = 45W
+
+Total per room = 165W
+```
+
+Full office maximum power:
+
+```text
+3 rooms × 165W = 495W
+```
+
+Estimated usage:
+
+```text
+Estimated hourly kWh = total_power / 1000
+Estimated office-day usage = hourly_kWh × 8
+Estimated cost = office-day kWh × assumed rate
+```
+
+The demo uses an assumed electricity rate for cost estimation.
+
+---
+
+# Screenshots
+
+Add screenshots before final submission.
+
+## Dashboard Screenshot
+
+```md
+![Dashboard Screenshot](diagrams/dashboard-screenshot.png)
+```
+
+Image to add:
+
+```text
+diagrams/dashboard-screenshot.png
+```
+
+## Discord Bot Screenshot
+
+```md
+![Discord Bot Screenshot](diagrams/discord-bot-screenshot.png)
+```
+
+Image to add:
+
+```text
+diagrams/discord-bot-screenshot.png
+```
+
+## Architecture Diagram
+
+```md
+![Software Architecture Diagram](diagrams/architecture.png)
+```
+
+Image to add:
+
+```text
+diagrams/architecture.png
+```
+
+## Hardware Schematic
+
+```md
+![Hardware Schematic](diagrams/hardware-schematic.png)
+```
+
+Image to add:
+
+```text
+diagrams/hardware-schematic.png
+```
+
+---
+
+# Testing
+
+## Backend Tests
+
+Ubuntu / Linux:
+
+```bash
+cd backend
+source .venv/bin/activate
+python manage.py test
+```
+
+Windows PowerShell:
+
+```powershell
+cd backend
+.\.venv\Scripts\Activate.ps1
+python manage.py test
+```
+
+Windows CMD:
+
+```cmd
+cd backend
+.venv\Scripts\activate
+python manage.py test
+```
+
+Expected result:
+
+```text
+OK
+```
+
+---
+
+# Demo Video Guide
+
+Recommended length: under 3 minutes.
+
+Suggested structure:
+
+| Time | Content |
+|---|---|
+| 0:00 - 0:20 | Explain the office energy problem |
+| 0:20 - 0:40 | Show architecture diagram |
+| 0:40 - 1:20 | Show live React dashboard |
+| 1:20 - 1:45 | Show Python simulator changing data |
+| 1:45 - 2:25 | Show Discord bot commands |
+| 2:25 - 2:45 | Show automatic alert messages |
+| 2:45 - 3:00 | Show Wokwi schematic and closing |
+
+Add demo video link here:
+
+```text
+Demo Video: ADD_YOUR_VIDEO_LINK_HERE
+```
+
+---
+
+# Submission Checklist
+
+Before final submission, make sure the repository includes:
+
+- [ ] Public GitHub repository
+- [ ] Full backend source code
+- [ ] Full frontend source code
+- [ ] Discord bot source code
+- [ ] Python simulation script
+- [ ] Clear README
+- [ ] Architecture diagram
+- [ ] Wokwi/Tinkercad hardware schematic
+- [ ] Wokwi project link
+- [ ] Dashboard screenshot
+- [ ] Discord bot screenshot
+- [ ] Demo video link
+- [ ] `.env.example` file
+- [ ] No real `.env` file
+- [ ] No Discord token in GitHub
+- [ ] No `node_modules`
+- [ ] No `.venv`
+- [ ] No `__pycache__`
+
+---
+
+# Security Notes
+
+Do not commit real secrets.
+
+Do not commit:
+
+```text
+bot/.env
+backend/.env
+frontend/.env
+```
+
+Do commit:
+
+```text
+bot/.env.example
+```
+
+If a Discord bot token is accidentally shared, reset it immediately from the Discord Developer Portal.
+
+---
+
+# Git Ignore Recommendations
+
+Make sure `.gitignore` includes:
+
+```gitignore
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+
+# Django
+db.sqlite3
+
+# Node
+node_modules/
+dist/
+build/
+
+# Environment files
+.env
+*.env
+bot/.env
+backend/.env
+frontend/.env
+
+# Keep example env files
+!.env.example
+!bot/.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# OS/editor files
+.DS_Store
+.vscode/
+.idea/
+```
+
+---
+
+# Final Notes
+
+Office Energy Monitor demonstrates a complete software-based office energy monitoring system.
+
+The Python simulation script generates live device data. The Django backend stores and processes the state. The React dashboard and Discord bot both read from the same backend, ensuring one shared source of truth. The Wokwi schematic shows how the system could be connected to real hardware in the future.
