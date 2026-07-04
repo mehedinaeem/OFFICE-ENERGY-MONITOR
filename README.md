@@ -746,11 +746,6 @@ Image to add:
 diagrams/architecture.png
 ```
 
-## Hardware Schematic
-
-```md
-![Hardware Schematic](diagrams/hardware-schematic.png)
-```
 
 
 ---
@@ -793,117 +788,15 @@ OK
 
 # Demo Video Guide
 
-Recommended length: under 3 minutes.
 
-Suggested structure:
-
-| Time | Content |
-|---|---|
-| 0:00 - 0:20 | Explain the office energy problem |
-| 0:20 - 0:40 | Show architecture diagram |
-| 0:40 - 1:20 | Show live React dashboard |
-| 1:20 - 1:45 | Show Python simulator changing data |
-| 1:45 - 2:25 | Show Discord bot commands |
-| 2:25 - 2:45 | Show automatic alert messages |
-| 2:45 - 3:00 | Show Wokwi schematic and closing |
-
-Add demo video link here:
 
 ```text
-Demo Video: ADD_YOUR_VIDEO_LINK_HERE
+Demo Video: video
 ```
 
 ---
 
-# Submission Checklist
 
-Before final submission, make sure the repository includes:
-
-- [ ] Public GitHub repository
-- [ ] Full backend source code
-- [ ] Full frontend source code
-- [ ] Discord bot source code
-- [ ] Python simulation script
-- [ ] Clear README
-- [ ] Architecture diagram
-- [ ] Wokwi/Tinkercad hardware schematic
-- [ ] Wokwi project link
-- [ ] Dashboard screenshot
-- [ ] Discord bot screenshot
-- [ ] Demo video link
-- [ ] `.env.example` file
-- [ ] No real `.env` file
-- [ ] No Discord token in GitHub
-- [ ] No `node_modules`
-- [ ] No `.venv`
-- [ ] No `__pycache__`
-
----
-
-# Security Notes
-
-Do not commit real secrets.
-
-Do not commit:
-
-```text
-bot/.env
-backend/.env
-frontend/.env
-```
-
-Do commit:
-
-```text
-bot/.env.example
-```
-
-If a Discord bot token is accidentally shared, reset it immediately from the Discord Developer Portal.
-
----
-
-# Git Ignore Recommendations
-
-Make sure `.gitignore` includes:
-
-```gitignore
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-.venv/
-venv/
-
-# Django
-db.sqlite3
-
-# Node
-node_modules/
-dist/
-build/
-
-# Environment files
-.env
-*.env
-bot/.env
-backend/.env
-frontend/.env
-
-# Keep example env files
-!.env.example
-!bot/.env.example
-!backend/.env.example
-!frontend/.env.example
-
-# OS/editor files
-.DS_Store
-.vscode/
-.idea/
-```
-
----
 
 # Final Notes
 
