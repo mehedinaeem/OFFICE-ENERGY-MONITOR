@@ -52,15 +52,36 @@ def _room_usage(rooms):
     return usage_rows
 
 
+def _room_status_summary(room):
+    devices = list(room.devices.all())
+    fans = [device for device in devices if device.device_type == Device.DeviceType.FAN]
+    lights = [
+        device for device in devices
+        if device.device_type == Device.DeviceType.LIGHT
+    ]
+
+    return {
+        'name': room.name,
+        'slug': room.slug,
+        'fans_on': sum(1 for device in fans if device.status == Device.Status.ON),
+        'lights_on': sum(
+            1 for device in lights if device.status == Device.Status.ON
+        ),
+        'total_fans': len(fans),
+        'total_lights': len(lights),
+        'power': sum(device.current_power for device in devices),
+    }
+
+
 def _usage_estimates(total_power):
     estimated_hourly_kwh = total_power / 1000
     estimated_daily_kwh = estimated_hourly_kwh * OFFICE_DAY_HOURS
     estimated_daily_cost = estimated_daily_kwh * ASSUMED_COST_PER_KWH
 
     return {
-        'estimated_hourly_kwh': estimated_hourly_kwh,
-        'estimated_daily_kwh': estimated_daily_kwh,
-        'estimated_daily_cost': estimated_daily_cost,
+        'estimated_hourly_kwh': round(estimated_hourly_kwh, 3),
+        'estimated_daily_kwh': round(estimated_daily_kwh, 3),
+        'estimated_daily_cost': round(estimated_daily_cost, 2),
         'assumed_cost_per_kwh': ASSUMED_COST_PER_KWH,
         'assumption_label': 'Assumed demo rate: 10 BDT/kWh',
     }
@@ -146,6 +167,21 @@ def devices(request):
     return Response(DeviceSerializer(queryset, many=True).data)
 
 
+@api_view(['GET'])
+def status_summary(request):
+    rooms = list(_rooms_queryset())
+    room_summaries = [_room_status_summary(room) for room in rooms]
+
+    return Response({
+        'rooms': room_summaries,
+        'total_power': sum(room['power'] for room in room_summaries),
+        'devices_on': sum(
+            room['fans_on'] + room['lights_on'] for room in room_summaries
+        ),
+        'active_alerts': Alert.objects.filter(resolved=False).count(),
+    })
+
+
 @api_view(['POST'])
 def toggle_device(request, device_id):
     device = get_object_or_404(Device.objects.select_related('room'), id=device_id)
@@ -184,10 +220,20 @@ def alerts(request):
     queryset = Alert.objects.filter(resolved=False).select_related('room').order_by(
         '-created_at'
     )
-    return Response(AlertSerializer(queryset, many=True).data)
+    alerts_data = AlertSerializer(queryset, many=True).data
+
+    return Response({
+        'active_alerts': len(alerts_data),
+        'alerts': alerts_data,
+    })
 
 
 @api_view(['GET'])
 def room_detail(request, slug):
     room = get_object_or_404(_rooms_queryset(), slug=slug)
-    return Response(RoomSerializer(room).data)
+    room_data = RoomSerializer(room).data
+
+    return Response({
+        **room_data,
+        'summary': _room_status_summary(room),
+    })

@@ -88,3 +88,41 @@ class SnapshotApiTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(device.status, Device.Status.ON)
         self.assertEqual(device.current_power, device.wattage)
+
+    def test_status_summary_returns_bot_friendly_fields(self):
+        call_command('seed_devices')
+        device = Device.objects.get(room__slug='work1', name='Fan 1')
+        device.set_status(Device.Status.ON)
+        device.save(update_fields=[
+            'status',
+            'current_power',
+            'last_changed',
+            'turned_on_at',
+        ])
+
+        response = self.client.get(reverse('status-summary'))
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn('rooms', data)
+        self.assertIn('total_power', data)
+        self.assertIn('devices_on', data)
+        self.assertIn('active_alerts', data)
+
+        work_room = next(room for room in data['rooms'] if room['name'] == 'Work Room 1')
+        self.assertEqual(work_room['fans_on'], 1)
+        self.assertEqual(work_room['lights_on'], 0)
+        self.assertEqual(work_room['total_fans'], 2)
+        self.assertEqual(work_room['total_lights'], 3)
+        self.assertEqual(work_room['power'], 60)
+
+    def test_room_detail_includes_bot_friendly_summary(self):
+        call_command('seed_devices')
+
+        response = self.client.get(reverse('room-detail', kwargs={'slug': 'work1'}))
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn('summary', data)
+        self.assertIn('fans_on', data['summary'])
+        self.assertIn('lights_on', data['summary'])

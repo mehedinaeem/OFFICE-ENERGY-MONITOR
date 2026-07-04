@@ -113,6 +113,26 @@ The frontend reads from:
 http://127.0.0.1:8000/api
 ```
 
+## Discord Bot Plan
+
+The Discord bot will read from the same backend API as the dashboard.
+
+Planned commands:
+
+```text
+!status
+!room work1
+!usage
+!alerts
+```
+
+Planned API mapping:
+
+- `!status` -> `GET /api/status-summary/`
+- `!room work1` -> `GET /api/rooms/work1/`
+- `!usage` -> `GET /api/usage/`
+- `!alerts` -> `GET /api/alerts/`
+
 ## Project Structure
 
 ```text
