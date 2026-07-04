@@ -98,6 +98,38 @@ def format_alert(alert):
     return f'[{severity}] {message}'
 
 
+def room_name_by_slug(snapshot):
+    return {
+        room.get('slug'): room.get('name')
+        for room in get_rooms(snapshot)
+        if room.get('slug') and room.get('name')
+    }
+
+
+def get_alert_room_name(alert, rooms_by_slug):
+    room_slug = alert.get('room')
+    return rooms_by_slug.get(room_slug) or 'Office'
+
+
+def stable_alert_key(alert, room_name):
+    severity = alert.get('severity', 'info')
+    message = alert.get('message', '')
+    return f'{severity}|{room_name}|{message}'
+
+
+def format_proactive_alert(alert, room_name):
+    message = alert.get('message', 'Alert details unavailable.')
+
+    if room_name != 'Office':
+        message = message.replace(f' in {room_name}', '')
+
+    return (
+        '⚠️ Office Alert\n'
+        f'Room: {room_name}\n'
+        f'Issue: {message}'
+    )
+
+
 def get_alert_channel_id():
     if not ALERT_CHANNEL_ID:
         return None
@@ -265,14 +297,17 @@ async def proactive_alerts():
     if not isinstance(alerts, list):
         return
 
-    for alert in alerts:
-        alert_id = alert.get('id') or alert.get('message')
+    rooms_by_slug = room_name_by_slug(snapshot)
 
-        if alert_id in seen_alerts:
+    for alert in alerts:
+        room_name = get_alert_room_name(alert, rooms_by_slug)
+        alert_key = stable_alert_key(alert, room_name)
+
+        if alert_key in seen_alerts:
             continue
 
-        seen_alerts.add(alert_id)
-        await channel.send(format_alert(alert))
+        seen_alerts.add(alert_key)
+        await channel.send(format_proactive_alert(alert, room_name))
 
 
 if not DISCORD_TOKEN:
