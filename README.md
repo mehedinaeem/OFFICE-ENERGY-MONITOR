@@ -133,17 +133,7 @@ React Web Dashboard + Discord Bot
 
 ### Architecture Diagram
 
-Add your software architecture diagram here:
-
-```md
 ![Software Architecture Diagram](diagrams/architecture.png)
-```
-
-Image to add:
-
-```text
-diagrams/architecture.png
-```
 
 ---
 
@@ -735,17 +725,7 @@ https://discord.gg/3Jwks5rfC
 
 ## Architecture Diagram
 
-```md
 ![Software Architecture Diagram](diagrams/architecture.png)
-```
-
-Image to add:
-
-```text
-diagrams/architecture.png
-```
-
-
 
 ---
 
