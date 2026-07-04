@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: office-energy-monitor-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: ./build.sh
+    startCommand: python manage.py migrate --noinput && python manage.py seed_devices && gunicorn config.wsgi:application
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: office-energy-monitor-backend.onrender.com
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://your-netlify-site.netlify.app
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://your-netlify-site.netlify.app
+      - key: DATABASE_URL
+        fromDatabase:
+          name: office-energy-monitor-db
+          property: connectionString
+
+databases:
+  - name: office-energy-monitor-db
+    databaseName: office_energy_monitor
+    user: office_energy_monitor

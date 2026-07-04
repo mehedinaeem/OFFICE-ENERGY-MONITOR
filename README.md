@@ -376,6 +376,18 @@ Frontend will run at:
 http://localhost:5173
 ```
 
+For local development, the frontend uses this API URL by default:
+
+```text
+http://127.0.0.1:8000/api
+```
+
+To point the frontend to a deployed backend, create `frontend/.env`:
+
+```env
+VITE_API_BASE_URL=https://your-render-service.onrender.com/api
+```
+
 ---
 
 ## Windows PowerShell
@@ -391,6 +403,95 @@ Frontend will run at:
 ```text
 http://localhost:5173
 ```
+
+---
+
+# Deployment
+
+The project is prepared for:
+
+- Backend on Render
+- Frontend on Netlify
+- PostgreSQL on Render for production data
+
+## Backend Deployment on Render
+
+Render can use the included `render.yaml` file from the repository root.
+
+Recommended Render settings if configuring manually:
+
+| Setting | Value |
+|---|---|
+| Root Directory | `backend` |
+| Build Command | `./build.sh` |
+| Start Command | `python manage.py migrate --noinput && python manage.py seed_devices && gunicorn config.wsgi:application` |
+
+Set these environment variables in Render:
+
+```env
+DJANGO_SECRET_KEY=generate-a-secure-secret
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=your-render-service.onrender.com
+CORS_ALLOWED_ORIGINS=https://your-netlify-site.netlify.app
+CSRF_TRUSTED_ORIGINS=https://your-netlify-site.netlify.app
+DATABASE_URL=your-render-postgres-connection-string
+```
+
+Notes:
+
+- Render PostgreSQL should provide `DATABASE_URL`.
+- `seed_devices` is safe to run more than once and prevents duplicate rooms/devices.
+- Static files are collected during build and served with WhiteNoise.
+
+After deployment, test:
+
+```text
+https://your-render-service.onrender.com/api/health/
+```
+
+Expected response:
+
+```json
+{"status":"ok"}
+```
+
+## Frontend Deployment on Netlify
+
+Netlify can use the included root `netlify.toml`.
+
+Recommended Netlify settings if configuring manually:
+
+| Setting | Value |
+|---|---|
+| Base directory | `frontend` |
+| Build command | `npm run build` |
+| Publish directory | `frontend/dist` |
+
+Set this environment variable in Netlify:
+
+```env
+VITE_API_BASE_URL=https://your-render-service.onrender.com/api
+```
+
+After Netlify deploys, update the Render backend environment variables:
+
+```env
+CORS_ALLOWED_ORIGINS=https://your-netlify-site.netlify.app
+CSRF_TRUSTED_ORIGINS=https://your-netlify-site.netlify.app
+```
+
+Then redeploy the Render backend.
+
+# Deployment Checklist
+
+- Backend health endpoint works on Render
+- Frontend `VITE_API_BASE_URL` points to the Render backend `/api`
+- Render CORS allows the Netlify site URL
+- Render `DJANGO_DEBUG` is `False`
+- Render `DJANGO_SECRET_KEY` is not the development fallback
+- Render has a PostgreSQL `DATABASE_URL`
+- Netlify build completes successfully
+- Dashboard loads live `/api/snapshot/` data
 
 ---
 

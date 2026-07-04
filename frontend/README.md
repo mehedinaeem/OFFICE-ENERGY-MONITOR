@@ -15,6 +15,12 @@ The dashboard expects the backend to be running at:
 http://127.0.0.1:8000/api
 ```
 
+To use a deployed backend, create `frontend/.env`:
+
+```env
+VITE_API_BASE_URL=https://your-render-service.onrender.com/api
+```
+
 ## Scripts
 
 Run development server:
@@ -34,6 +40,26 @@ Build production assets:
 ```bash
 npm run build
 ```
+
+## Netlify Deployment
+
+The frontend is prepared for Netlify with `netlify.toml`.
+
+Manual Netlify settings:
+
+```text
+Base directory: frontend
+Build command: npm run build
+Publish directory: frontend/dist
+```
+
+Set this Netlify environment variable:
+
+```env
+VITE_API_BASE_URL=https://your-render-service.onrender.com/api
+```
+
+After Netlify deploys, add the Netlify URL to the backend `CORS_ALLOWED_ORIGINS` environment variable on Render.
 
 ## Dashboard
 

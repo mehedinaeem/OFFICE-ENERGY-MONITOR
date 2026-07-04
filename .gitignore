@@ -9,12 +9,15 @@ bot/.venv/
 
 # Django / SQLite
 db.sqlite3
+staticfiles/
 
 # Local environment files
 .env
 .env.*
 *.env
 bot/.env
+!.env.example
+!**/.env.example
 
 # Node / frontend
 node_modules/
