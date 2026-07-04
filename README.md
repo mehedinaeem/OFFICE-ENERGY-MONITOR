@@ -133,7 +133,7 @@ React Web Dashboard + Discord Bot
 
 ### Architecture Diagram
 
-![Software Architecture Diagram](diagrams/architecture.png)
+![Software Architecture Diagram](diagrams/architecture.jpeg)
 
 ---
 
@@ -199,7 +199,7 @@ Office-Energy-Monitor/
 │   └── README.md
 │
 ├── diagrams/
-│   ├── architecture.png
+│   ├── architecture.jpeg
 │   ├── hardware-schematic.png
 │   ├── dashboard_01
 │   ├── dashboard_02.png
@@ -725,7 +725,7 @@ https://discord.gg/3Jwks5rfC
 
 ## Architecture Diagram
 
-![Software Architecture Diagram](diagrams/architecture.png)
+![Software Architecture Diagram](diagrams/architecture.jpeg)
 
 ---
 
