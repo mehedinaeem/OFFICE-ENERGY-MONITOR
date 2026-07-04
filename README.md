@@ -128,7 +128,7 @@ Django REST API ↔ SQLite Database
         ↓
 React Web Dashboard + Discord Bot
         ↓
-User
+      User
 ```
 
 ### Architecture Diagram
@@ -426,7 +426,6 @@ API_BASE_URL=http://127.0.0.1:8000/api
 ALERT_CHANNEL_ID=your_discord_channel_id_here
 ```
 
-```
 
 ---
 
@@ -786,7 +785,7 @@ OK
 
 ---
 
-# Demo Video Guide
+# Demo Video
 
 
 
