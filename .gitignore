@@ -13,3 +13,9 @@ db.sqlite3
 .env
 .env.*
 
+# Node / frontend
+node_modules/
+dist/
+
+# Local generated scratch folders
+tmp/

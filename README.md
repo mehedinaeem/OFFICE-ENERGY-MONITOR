@@ -42,7 +42,7 @@ Planned API areas:
 
 ## Setup Plan
 
-The backend scaffold is now available. The frontend has not been created yet.
+The backend API and basic React frontend are now available.
 
 Backend setup:
 
@@ -51,7 +51,23 @@ cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+Run migrations:
+
+```bash
 python manage.py migrate
+```
+
+Seed initial office data:
+
+```bash
+python manage.py seed_devices
+```
+
+Run the backend API:
+
+```bash
 python manage.py runserver
 ```
 
@@ -67,7 +83,35 @@ Expected response:
 {"status":"ok"}
 ```
 
-Planned frontend setup will be added later when the Vite React app is created.
+Run the device simulator in a separate terminal:
+
+```bash
+cd backend
+source .venv/bin/activate
+python manage.py simulate_devices
+```
+
+Run backend tests:
+
+```bash
+cd backend
+source .venv/bin/activate
+python manage.py test
+```
+
+Frontend setup:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend reads from:
+
+```text
+http://127.0.0.1:8000/api
+```
 
 ## Project Structure
 
