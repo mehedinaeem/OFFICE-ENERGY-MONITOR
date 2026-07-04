@@ -46,7 +46,7 @@ Total devices:
 3 rooms × 5 devices = 15 devices
 ```
 
-> Note: Some sections of the task document mention 18 devices, but the fixed office setup says each room has 2 fans and 3 lights. That gives 15 devices total, so this project follows the fixed room setup.
+> Note: Wattage values are assumed for demo calculation only.
 
 ---
 
@@ -167,17 +167,7 @@ https://wokwi.com/projects/468554658383958017
 
 ### Hardware Schematic Image
 
-Add your Wokwi circuit screenshot here:
-
-```md
 ![Hardware Schematic](diagrams/hardware-schematic.png)
-```
-
-Image to add:
-
-```text
-diagrams/hardware-schematic.png
-```
 
 ### Pin Mapping
 
@@ -221,11 +211,12 @@ Office-Energy-Monitor/
 ├── diagrams/
 │   ├── architecture.png
 │   ├── hardware-schematic.png
-│   ├── dashboard-screenshot.png
-│   └── discord-bot-screenshot.png
+│   ├── dashboard_01
+│   ├── dashboard_02.png
+│   ├── db.png
+│   └── Discord_server.png
 │
 ├── docs/
-│   ├── demo-script.md
 │   └── pin-mapping.md
 │
 ├── README.md
@@ -364,25 +355,6 @@ source .venv/bin/activate
 python manage.py simulate_devices
 ```
 
-## Windows PowerShell
-
-Open a new terminal:
-
-```powershell
-cd backend
-.\.venv\Scripts\Activate.ps1
-python manage.py simulate_devices
-```
-
-## Windows CMD
-
-```cmd
-cd backend
-.venv\Scripts\activate
-python manage.py simulate_devices
-```
-
-The simulator will randomly toggle devices and update the database.
 
 ---
 
@@ -426,21 +398,15 @@ http://localhost:5173
 
 ## 1. Create Discord Bot
 
-Go to the Discord Developer Portal:
+The Discord bot has been created and invited to the Discord server.
+
+Server invite:
 
 ```text
-https://discord.com/developers/applications
+https://discord.gg/3Jwks5rfC
 ```
 
-Steps:
-
-1. Create a new application
-2. Go to the Bot section
-3. Create a bot
-4. Copy the bot token
-5. Enable Message Content Intent
-6. Invite the bot to your server
-7. Give the bot permission to read and send messages
+![Discord Server](diagrams/Discord_server.png)
 
 ---
 
@@ -460,22 +426,6 @@ API_BASE_URL=http://127.0.0.1:8000/api
 ALERT_CHANNEL_ID=your_discord_channel_id_here
 ```
 
-Important:
-
-Do not commit `.env` to GitHub.
-
-Only commit:
-
-```text
-bot/.env.example
-```
-
-Example file:
-
-```env
-DISCORD_TOKEN=your_discord_bot_token_here
-API_BASE_URL=http://127.0.0.1:8000/api
-ALERT_CHANNEL_ID=your_channel_id_here
 ```
 
 ---
@@ -494,25 +444,7 @@ pip install -r requirements.txt
 python bot.py
 ```
 
-## Windows PowerShell
 
-```powershell
-cd bot
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python bot.py
-```
-
-## Windows CMD
-
-```cmd
-cd bot
-py -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-python bot.py
-```
 
 ---
 
@@ -782,31 +714,25 @@ The demo uses an assumed electricity rate for cost estimation.
 
 # Screenshots
 
-Add screenshots before final submission.
-
 ## Dashboard Screenshot
 
-```md
-![Dashboard Screenshot](diagrams/dashboard-screenshot.png)
-```
+![Dashboard Screenshot 1](diagrams/dashboard_01)
 
-Image to add:
+![Dashboard Screenshot 2](diagrams/dashboard_02.png)
 
-```text
-diagrams/dashboard-screenshot.png
-```
+## Django Admin / Database Screenshot
 
-## Discord Bot Screenshot
+![Django Admin Screenshot](diagrams/db.png)
 
-```md
-![Discord Bot Screenshot](diagrams/discord-bot-screenshot.png)
-```
+## Discord Server Screenshot
 
-Image to add:
+Server invite:
 
 ```text
-diagrams/discord-bot-screenshot.png
+https://discord.gg/3Jwks5rfC
 ```
+
+![Discord Server](diagrams/Discord_server.png)
 
 ## Architecture Diagram
 

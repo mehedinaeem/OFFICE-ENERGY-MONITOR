@@ -35,6 +35,18 @@ Do not commit `.env`.
 
 Enable **Message Content Intent** for the bot in the Discord Developer Portal. The bot uses the `!` command prefix, so it needs permission to read message content.
 
+## Discord Server
+
+The bot has been invited to the Discord server used for the demo.
+
+Server invite:
+
+```text
+https://discord.gg/3Jwks5rfC
+```
+
+![Discord Server](../diagrams/Discord_server.png)
+
 ## Run
 
 Make sure the Django backend is running first:
