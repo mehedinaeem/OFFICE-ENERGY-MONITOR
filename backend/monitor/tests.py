@@ -67,3 +67,24 @@ class SnapshotApiTests(TestCase):
         self.assertIn('usage', data)
         self.assertIn('rooms', data)
         self.assertIn('alerts', data)
+        self.assertIn('estimated_hourly_kwh', data['usage'])
+        self.assertIn('estimated_daily_kwh', data['usage'])
+        self.assertIn('estimated_daily_cost', data['usage'])
+
+    def test_toggle_device_endpoint_updates_device_status(self):
+        room = Room.objects.create(name='Test Room', slug='test-room')
+        device = Device.objects.create(
+            room=room,
+            name='Test Light',
+            device_type=Device.DeviceType.LIGHT,
+            wattage=15,
+        )
+
+        response = self.client.post(
+            reverse('toggle-device', kwargs={'device_id': device.id})
+        )
+        device.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(device.status, Device.Status.ON)
+        self.assertEqual(device.current_power, device.wattage)

@@ -73,7 +73,7 @@
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
   margin-bottom: 18px;
 }
@@ -209,6 +209,25 @@
 
 .device-state {
   flex: 0 0 auto;
+}
+
+.toggle-button {
+  padding: 5px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #1e293b;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.toggle-button:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.toggle-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }
 
 .status-pill {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getSnapshot } from './api'
+import { getSnapshot, toggleDevice } from './api'
 import AlertsPanel from './components/AlertsPanel'
 import Header from './components/Header'
 import OfficeLayout from './components/OfficeLayout'
@@ -44,6 +44,19 @@ function App() {
     }
   }, [])
 
+  async function handleToggleDevice(deviceId) {
+    try {
+      await toggleDevice(deviceId)
+      const data = await getSnapshot()
+      setSnapshot(data)
+      setError('')
+    } catch {
+      setError('Could not toggle device. Is Django running on port 8000?')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const roomUsageBySlug = useMemo(() => {
     if (!snapshot) {
       return {}
@@ -84,7 +97,7 @@ function App() {
 
       {error && <p className="error-banner">{error}</p>}
 
-      <SummaryCards summary={summary} />
+      <SummaryCards summary={summary} usage={usage} />
 
       <section className="panel">
         <div className="section-heading">
@@ -97,6 +110,7 @@ function App() {
               key={room.slug}
               room={room}
               roomUsage={roomUsageBySlug[room.slug]}
+              onToggleDevice={handleToggleDevice}
             />
           ))}
         </div>

@@ -11,6 +11,8 @@ from .serializers import AlertSerializer, DeviceSerializer, RoomSerializer
 OFFICE_START_HOUR = 9
 OFFICE_END_HOUR = 17
 POWER_DANGER_THRESHOLD = 400
+ASSUMED_COST_PER_KWH = 10
+OFFICE_DAY_HOURS = 8
 
 
 @api_view(['GET'])
@@ -48,6 +50,20 @@ def _room_usage(rooms):
         })
 
     return usage_rows
+
+
+def _usage_estimates(total_power):
+    estimated_hourly_kwh = total_power / 1000
+    estimated_daily_kwh = estimated_hourly_kwh * OFFICE_DAY_HOURS
+    estimated_daily_cost = estimated_daily_kwh * ASSUMED_COST_PER_KWH
+
+    return {
+        'estimated_hourly_kwh': estimated_hourly_kwh,
+        'estimated_daily_kwh': estimated_daily_kwh,
+        'estimated_daily_cost': estimated_daily_cost,
+        'assumed_cost_per_kwh': ASSUMED_COST_PER_KWH,
+        'assumption_label': 'Assumed demo rate: 10 BDT/kWh',
+    }
 
 
 def _refresh_alerts(rooms, total_power):
@@ -111,6 +127,7 @@ def _snapshot_data(refresh_alerts=False):
         },
         'usage': {
             'total_power': total_power,
+            **_usage_estimates(total_power),
             'room_usage': usage_rows,
         },
         'rooms': RoomSerializer(rooms, many=True).data,
@@ -129,13 +146,35 @@ def devices(request):
     return Response(DeviceSerializer(queryset, many=True).data)
 
 
+@api_view(['POST'])
+def toggle_device(request, device_id):
+    device = get_object_or_404(Device.objects.select_related('room'), id=device_id)
+    new_status = (
+        Device.Status.OFF
+        if device.status == Device.Status.ON
+        else Device.Status.ON
+    )
+
+    device.set_status(new_status)
+    device.save(update_fields=[
+        'status',
+        'current_power',
+        'last_changed',
+        'turned_on_at',
+    ])
+
+    return Response(DeviceSerializer(device).data)
+
+
 @api_view(['GET'])
 def usage(request):
     rooms = list(_rooms_queryset())
     usage_rows = _room_usage(rooms)
+    total_power = sum(row['power'] for row in usage_rows)
 
     return Response({
-        'total_power': sum(row['power'] for row in usage_rows),
+        'total_power': total_power,
+        **_usage_estimates(total_power),
         'room_usage': usage_rows,
     })
 

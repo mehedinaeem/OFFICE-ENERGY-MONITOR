@@ -10,3 +10,8 @@ export async function getSnapshot() {
   const response = await api.get('/snapshot/')
   return response.data
 }
+
+export async function toggleDevice(deviceId) {
+  const response = await api.post(`/devices/${deviceId}/toggle/`)
+  return response.data
+}

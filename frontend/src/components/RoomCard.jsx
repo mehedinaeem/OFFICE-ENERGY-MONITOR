@@ -6,7 +6,7 @@ const roomDescriptions = {
   work2: 'Secondary workstation area',
 }
 
-function RoomCard({ room, roomUsage }) {
+function RoomCard({ room, roomUsage, onToggleDevice }) {
   const roomPower = roomUsage?.power ?? 0
   const devicesOn = roomUsage?.devices_on ?? 0
   const totalDevices = roomUsage?.total_devices ?? room.devices.length
@@ -39,6 +39,13 @@ function RoomCard({ room, roomUsage }) {
               <div className="device-state">
                 <StatusBadge status={device.status} />
                 <strong>{device.current_power}W</strong>
+                <button
+                  className="toggle-button"
+                  type="button"
+                  onClick={() => onToggleDevice(device.id)}
+                >
+                  Toggle
+                </button>
               </div>
             </li>
           )
