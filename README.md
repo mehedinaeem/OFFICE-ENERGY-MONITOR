@@ -752,11 +752,6 @@ diagrams/architecture.png
 ![Hardware Schematic](diagrams/hardware-schematic.png)
 ```
 
-Image to add:
-
-```text
-diagrams/hardware-schematic.png
-```
 
 ---
 
