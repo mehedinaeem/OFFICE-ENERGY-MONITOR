@@ -5,6 +5,7 @@ __pycache__/
 # Virtual environments
 .venv/
 venv/
+bot/.venv/
 
 # Django / SQLite
 db.sqlite3
@@ -13,6 +14,7 @@ db.sqlite3
 .env
 .env.*
 *.env
+bot/.env
 
 # Node / frontend
 node_modules/

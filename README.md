@@ -36,6 +36,7 @@ The backend is the single source of truth. The simulator, dashboard, manual togg
 
 - Backend: Django, Django REST Framework
 - Frontend: React, Vite
+- Bot: discord.py
 - API client: Axios
 - Database: SQLite for local demo
 - Styling: Plain CSS
@@ -53,6 +54,7 @@ The backend is the single source of truth. The simulator, dashboard, manual togg
 - Summary cards, room cards, power breakdown, alerts, and simple office layout
 - Estimated hourly usage, office-day usage, and daily cost
 - Bot-friendly API response for status summaries
+- Discord bot scaffold with live API-backed commands
 - Basic backend tests
 
 ## Backend Setup
@@ -207,7 +209,20 @@ Possible future hardware inputs:
 
 ## Future Discord Bot Plan
 
-The Discord bot will read from the same backend API as the dashboard.
+The Discord bot lives in `bot/` and reads from the same backend API as the dashboard.
+
+Bot setup:
+
+```bash
+cd bot
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python bot.py
+```
+
+Set `DISCORD_TOKEN` and `API_BASE_URL` in `bot/.env`. Do not commit `.env`.
 
 Planned commands:
 
