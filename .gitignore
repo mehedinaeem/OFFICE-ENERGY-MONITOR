@@ -12,10 +12,14 @@ db.sqlite3
 # Local environment files
 .env
 .env.*
+*.env
 
 # Node / frontend
 node_modules/
+build/
 dist/
+dist-ssr/
+*.local
 
 # Local generated scratch folders
 tmp/
