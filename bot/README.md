@@ -80,3 +80,25 @@ python bot.py
 ## Optional Proactive Alerts
 
 Set `ALERT_CHANNEL_ID` in `.env` to a Discord text channel ID. The bot will check alerts every 30 seconds and send new alerts to that channel without repeating the same alert in memory.
+
+## Render Worker Deployment
+
+The bot can run as a Render background worker.
+
+Manual Render settings:
+
+```text
+Root Directory: bot
+Build Command: pip install -r requirements.txt
+Start Command: python bot.py
+```
+
+Required environment variables:
+
+```env
+DISCORD_TOKEN=your_real_discord_bot_token
+API_BASE_URL=https://your-render-service.onrender.com/api
+ALERT_CHANNEL_ID=your_discord_channel_id
+```
+
+Do not use `http://127.0.0.1:8000/api` on Render. The bot worker must call the deployed backend URL.
