@@ -385,7 +385,7 @@ http://127.0.0.1:8000/api
 To point the frontend to a deployed backend, create `frontend/.env`:
 
 ```env
-VITE_API_BASE_URL=https://your-render-service.onrender.com/api
+VITE_API_BASE_URL=https://office-energy-monitor-y6jt.onrender.com/api
 ```
 
 ---
@@ -418,7 +418,14 @@ The project is prepared for:
 
 Render can use the included `render.yaml` file from the repository root.
 
-Recommended Render settings if configuring manually:
+The included Render blueprint defines:
+
+- `office-energy-monitor-backend` as the Django web API
+- `office-energy-monitor-simulator` as a background worker
+- `office-energy-monitor-discord-bot` as a background worker
+- `office-energy-monitor-db` as PostgreSQL
+
+Recommended backend web settings if configuring manually:
 
 | Setting | Value |
 |---|---|
@@ -431,9 +438,9 @@ Set these environment variables in Render:
 ```env
 DJANGO_SECRET_KEY=generate-a-secure-secret
 DJANGO_DEBUG=False
-DJANGO_ALLOWED_HOSTS=your-render-service.onrender.com
-CORS_ALLOWED_ORIGINS=https://your-netlify-site.netlify.app
-CSRF_TRUSTED_ORIGINS=https://your-netlify-site.netlify.app
+DJANGO_ALLOWED_HOSTS=office-energy-monitor-y6jt.onrender.com
+CORS_ALLOWED_ORIGINS=https://office-energy-monitor.netlify.app
+CSRF_TRUSTED_ORIGINS=https://office-energy-monitor.netlify.app
 DATABASE_URL=your-render-postgres-connection-string
 ```
 
@@ -442,11 +449,12 @@ Notes:
 - Render PostgreSQL should provide `DATABASE_URL`.
 - `seed_devices` is safe to run more than once and prevents duplicate rooms/devices.
 - Static files are collected during build and served with WhiteNoise.
+- The simulator worker uses the same `DATABASE_URL`, so it updates the same database that the dashboard and bot read from.
 
 After deployment, test:
 
 ```text
-https://your-render-service.onrender.com/api/health/
+https://office-energy-monitor-y6jt.onrender.com/api/health/
 ```
 
 Expected response:
@@ -470,17 +478,43 @@ Recommended Netlify settings if configuring manually:
 Set this environment variable in Netlify:
 
 ```env
-VITE_API_BASE_URL=https://your-render-service.onrender.com/api
+VITE_API_BASE_URL=https://office-energy-monitor-y6jt.onrender.com/api
 ```
 
 After Netlify deploys, update the Render backend environment variables:
 
 ```env
-CORS_ALLOWED_ORIGINS=https://your-netlify-site.netlify.app
-CSRF_TRUSTED_ORIGINS=https://your-netlify-site.netlify.app
+CORS_ALLOWED_ORIGINS=https://office-energy-monitor.netlify.app
+CSRF_TRUSTED_ORIGINS=https://office-energy-monitor.netlify.app
 ```
 
 Then redeploy the Render backend.
+
+## Discord Bot Worker on Render
+
+The bot can run as a Render background worker. It should use the deployed backend API, not local host.
+
+Set these worker environment variables:
+
+```env
+DISCORD_TOKEN=your-real-discord-bot-token
+API_BASE_URL=https://office-energy-monitor-y6jt.onrender.com/api
+ALERT_CHANNEL_ID=your-discord-alert-channel-id
+```
+
+Keep `DISCORD_TOKEN` secret. Do not commit it to GitHub.
+
+## Simulator Worker on Render
+
+The simulator can run as a Render background worker with:
+
+```text
+Root Directory: backend
+Build Command: ./build.sh
+Start Command: python manage.py migrate --noinput && python manage.py seed_devices && python manage.py simulate_devices
+```
+
+It must use the same `DATABASE_URL` as the backend web service.
 
 # Deployment Checklist
 
@@ -490,6 +524,8 @@ Then redeploy the Render backend.
 - Render `DJANGO_DEBUG` is `False`
 - Render `DJANGO_SECRET_KEY` is not the development fallback
 - Render has a PostgreSQL `DATABASE_URL`
+- Simulator worker is running if you want automatic live demo changes
+- Discord bot worker has `DISCORD_TOKEN`, `API_BASE_URL`, and `ALERT_CHANNEL_ID`
 - Netlify build completes successfully
 - Dashboard loads live `/api/snapshot/` data
 

@@ -16,6 +16,11 @@ staticfiles/
 .env.*
 *.env
 bot/.env
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
 !.env.example
 !**/.env.example
 

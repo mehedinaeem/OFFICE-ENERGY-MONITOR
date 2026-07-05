@@ -77,8 +77,8 @@ Required Render environment variables:
 ```env
 DJANGO_SECRET_KEY=generate-a-secure-secret
 DJANGO_DEBUG=False
-DJANGO_ALLOWED_HOSTS=your-render-service.onrender.com
-CORS_ALLOWED_ORIGINS=https://your-netlify-site.netlify.app
-CSRF_TRUSTED_ORIGINS=https://your-netlify-site.netlify.app
+DJANGO_ALLOWED_HOSTS=office-energy-monitor-y6jt.onrender.com
+CORS_ALLOWED_ORIGINS=https://office-energy-monitor.netlify.app
+CSRF_TRUSTED_ORIGINS=https://office-energy-monitor.netlify.app
 DATABASE_URL=your-render-postgres-connection-string
 ```
