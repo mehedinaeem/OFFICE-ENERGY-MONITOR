@@ -6,6 +6,18 @@ The system uses a Python simulation script to generate live office device data. 
 
 ---
 
+## Live Deployment
+
+- Netlify dashboard: https://office-energy-monitor.netlify.app/
+- Render backend health check: https://office-energy-monitor-y6jt.onrender.com/api/health/
+- Demo video: https://drive.google.com/drive/folders/1MF0drxtSkH4hvNEV7kY3Fs8plknhNe7f
+
+Deployment note:
+
+Because of free hosting limitations, the Discord bot and continuous Python simulator are not deployed as always-running services. You can still test the deployed project by using the dashboard toggle controls, which update the device data through the backend API.
+
+---
+
 ## Project Overview
 
 In a small office, people often leave lights and fans running after office hours. This increases electricity usage and makes it difficult to track wasted power.
@@ -770,7 +782,7 @@ OK
 
 
 ```text
-Demo Video: video
+Demo Video: https://drive.google.com/drive/folders/1MF0drxtSkH4hvNEV7kY3Fs8plknhNe7f
 ```
 
 ---
